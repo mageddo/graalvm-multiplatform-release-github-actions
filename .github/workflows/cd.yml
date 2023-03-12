@@ -16,7 +16,7 @@ jobs:
 
   image-generation:
     name: HelloWorld on ${{ matrix.os }}
-    needs: build
+    needs: assemble
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
