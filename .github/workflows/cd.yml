@@ -32,7 +32,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Set app version
-        run: echo "APP_VERSION=$(cat gradle.properties | grep -oP 'version=\K(.+)')" >> $GITHUB_ENV
+        run: echo "APP_VERSION=$(./gradlew -q version)" >> $GITHUB_ENV
 
       - name: Build and run HelloWorld.java
         run: |

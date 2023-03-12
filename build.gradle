@@ -1,0 +1,7 @@
+plugins {
+    id "java"
+}
+
+task version (){
+    print(project.version)
+}
