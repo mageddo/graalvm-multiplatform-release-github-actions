@@ -31,6 +31,8 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
+      - name: Set app version
+        run: echo "APP_VERSION=$(cat gradle.properties | grep -oP 'version=\K(.+)')" >> $GITHUB_ENV
 
       - name: Build and run HelloWorld.java
         run: |
@@ -45,17 +47,17 @@ jobs:
         with:
           input: RELEASE-NOTES.md
           output: VERSION-RELEASE-NOTES.md
-      - name: Check release notes
+      - name: Check Release Notes
         run: cat ./VERSION-RELEASE-NOTES.md
 
       - name: Github release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ env.APP_VERSION }}
+          prerelease: true
           body_path: VERSION-RELEASE-NOTES.md
           files: |
-            name: helloworld-${{ matrix.os }}
-            path: helloworld*
-
+            helloworld*
 
 #      - name: Upload binary
 #        uses: actions/upload-artifact@v2
