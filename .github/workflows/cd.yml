@@ -12,7 +12,7 @@ jobs:
           version: '22.3.1'
           java-version: '17'
       - name: Dummy Command
-        run: echo "its $(date)"
+        run: sleep 30 && echo "its $(date)"
 
   image-generation:
     name: HelloWorld on ${{ matrix.os }}
