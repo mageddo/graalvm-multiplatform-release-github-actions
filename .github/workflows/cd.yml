@@ -39,8 +39,50 @@ jobs:
           native-image HelloWorld
           ./helloworld
 
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
+      # your changelog need to be compliant to: https://keepachangelog.com/en/1.0.0/
+      - name: Latest version changelog extraction
+        uses: kemayo/actions-recent-changelog@v1
         with:
-          name: helloworld-${{ matrix.os }}
-          path: helloworld*
+          input: RELEASE-NOTES.md
+          output: VERSION-RELEASE-NOTES.md
+      - name: Check release notes
+        run: cat ./VERSION-RELEASE-NOTES.md
+
+      - name: Github release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: VERSION-RELEASE-NOTES.md
+          files: |
+            name: helloworld-${{ matrix.os }}
+            path: helloworld*
+
+
+#      - name: Upload binary
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: helloworld-${{ matrix.os }}
+#          path: helloworld*
+#
+#    release:
+#      name: Github Release
+#      needs: image-generation
+#      runs-on: ubuntu-latest
+#      steps:
+#      # your changelog need to be compliant to: https://keepachangelog.com/en/1.0.0/
+#      - name: Latest version changelog extraction
+#        uses: kemayo/actions-recent-changelog@v1
+#        with:
+#          input: RELEASE-NOTES.md
+#          output: VERSION-RELEASE-NOTES.md
+#      - name: Check release notes
+#        run: cat ./VERSION-RELEASE-NOTES.md
+#
+#      - name: Github release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          body_path: VERSION-RELEASE-NOTES.md
+#          files: |
+#            build/dns-proxy-server-linux-386-${{ github.ref_name }}.tgz
+#            build/dns-proxy-server-linux-amd64-${{ github.ref_name }}.tgz
+#            build/dns-proxy-server-linux-arm-${{ github.ref_name }}.tgz
+#            build/dns-proxy-server-linux-arm64-${{ github.ref_name }}.tgz
