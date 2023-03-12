@@ -1,5 +1,7 @@
 name: GraalVM Native Image builds
 on: [push, pull_request]
+permissions:
+  contents: write
 jobs:
   assemble:
     name: something done before the image generation
@@ -12,7 +14,7 @@ jobs:
           version: '22.3.1'
           java-version: '17'
       - name: Dummy Command
-        run: sleep 30 && echo "its $(date)"
+        run: sleep 5 && echo "its $(date)"
 
   image-generation:
     name: HelloWorld on ${{ matrix.os }}
@@ -52,6 +54,8 @@ jobs:
 
       - name: Github release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.APP_VERSION }}
           prerelease: true
