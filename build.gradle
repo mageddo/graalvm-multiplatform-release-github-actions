@@ -12,6 +12,6 @@ task setVersionOnActions(){
     doLast {
         def f = System.getenv("GITHUB_ENV")
         println("> writing ${project.version} to $f")
-        file(f).append("${project.version}\n")
+        file(f).append("APP_VERSION=${project.version}\n")
     }
 }
