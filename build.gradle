@@ -3,5 +3,15 @@ plugins {
 }
 
 task version (){
-    print(project.version)
+    doLast {
+        print(project.version)
+    }
+}
+
+task setVersionOnActions(){
+    doLast {
+        def f = System.getenv("GITHUB_ENV")
+        println("> writing ${project.version} to $f")
+        file(f).append("${project.version}\n")
+    }
 }
