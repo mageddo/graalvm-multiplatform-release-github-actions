@@ -9,33 +9,92 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
-  image-generation:
-    name: Test
-    runs-on: windows-latest
-
+  assemble:
+    name: something done before the image generation
+    runs-on: ubuntu-latest
     steps:
-      - uses: graalvm/setup-graalvm@v1
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: graalvm/setup-graalvm@v1
         with:
           version: '22.3.1'
-          java-version: '19'
+          java-version: '17'
+      - name: Dummy Command
+        run: sleep 5 && echo "its $(date)"
+
+  image-generation:
+    name: HelloWorld on ${{ matrix.os }}
+    needs: assemble
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.0'
+          java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
+      - name: Set app version
+        run: ./gradlew setVersionOnActions
 
-      - if: runner.os == 'Windows'
-        run: native-image --version
+      - name: Build and run HelloWorld.java
+        run: |
+          echo 'public class HelloWorld { public static void main(String[] args) { System.out.println("Hello, World!"); } }' > HelloWorld.java
+          javac HelloWorld.java
+          native-image HelloWorld
+          ./helloworld
 
-      - name: bash test
-        run: mkdir -p xpto/x && ls -lha ./xpto/x
-        shell: bash
+      # your changelog need to be compliant to: https://keepachangelog.com/en/1.0.0/
+      - name: Latest version changelog extraction
+        uses: kemayo/actions-recent-changelog@v1
+        with:
+          input: RELEASE-NOTES.md
+          output: VERSION-RELEASE-NOTES.md
+      - name: Check Release Notes
+        run: cat ./VERSION-RELEASE-NOTES.md
 
-#  uname -mo
-#      x86_64 Msys
-#      - name: aa
-#        run: ln -s $GRAALVM_HOME/native-image.cmd $GRAALVM_HOME/native-image
-#        shell: bash
-#      - name: b
-#        run: $GRAALVM_HOME/bin/native-image --version
-#        run: ls -lha $GRAALVM_HOME/bin
-#        shell: bash
+      - name: Github release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.APP_VERSION }}
+          prerelease: true
+          body_path: VERSION-RELEASE-NOTES.md
+          files: |
+            helloworld*
+
+#      - name: Upload binary
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: helloworld-${{ matrix.os }}
+#          path: helloworld*
+#
+#    release:
+#      name: Github Release
+#      needs: image-generation
+#      runs-on: ubuntu-latest
+#      steps:
+#      # your changelog need to be compliant to: https://keepachangelog.com/en/1.0.0/
+#      - name: Latest version changelog extraction
+#        uses: kemayo/actions-recent-changelog@v1
+#        with:
+#          input: RELEASE-NOTES.md
+#          output: VERSION-RELEASE-NOTES.md
+#      - name: Check release notes
+#        run: cat ./VERSION-RELEASE-NOTES.md
+#
+#      - name: Github release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          body_path: VERSION-RELEASE-NOTES.md
+#          files: |
+#            build/dns-proxy-server-linux-386-${{ github.ref_name }}.tgz
+#            build/dns-proxy-server-linux-amd64-${{ github.ref_name }}.tgz
+#            build/dns-proxy-server-linux-arm-${{ github.ref_name }}.tgz
+#            build/dns-proxy-server-linux-arm64-${{ github.ref_name }}.tgz
