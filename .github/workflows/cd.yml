@@ -26,16 +26,18 @@ jobs:
       - if: runner.os == 'Windows'
         run: native-image -Djava.home="$env:GRAALVM_HOME" --version
 
-      - name: compress tools
-        run: mkdir tmp
+      - name: boostrap
+        run: mkdir tmp && cat ${GRAALVM_HOME}/bin/native-image.cmd
+        #&& ln -s ${GRAALVM_HOME}/bin/native-image.cmd ${GRAALVM_HOME}/bin/native-image
         shell: bash
 
       - name: Build and run HelloWorld.java
         run: |
           echo 'public class HelloWorld { public static void main(String[] args) { System.out.println("Hello, World!"); } }' > HelloWorld.java
           javac HelloWorld.java
-          native-image -Djava.home="$env:GRAALVM_HOME" HelloWorld ./tmp/helloworld
-          ./helloworld
+          ${GRAALVM_HOME}/bin/native-image.cmd -Djava.home="${GRAALVM_HOME}" HelloWorld ./tmp/helloworld
+          ./tmp/helloworld
+        shell: bash
 
       - name: compress tools
         run: 7z
