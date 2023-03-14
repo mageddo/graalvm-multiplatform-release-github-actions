@@ -23,7 +23,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - if: runner.os == 'Windows'
-        run: ln -s $GRAALVM_HOME/native-image.cmd $GRAALVM_HOME/native-image
+        run: ln -s $GRAALVM_HOME/bin/native-image.cmd $GRAALVM_HOME/bin/native-image
         shell: bash
 
       - name: native-image
