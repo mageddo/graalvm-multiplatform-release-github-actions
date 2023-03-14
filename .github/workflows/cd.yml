@@ -24,7 +24,7 @@ jobs:
           native-image-job-reports: 'true'
 
       - if: runner.os == 'Windows'
-        run: echo $GRAALVM_HOME &&  native-image --version
+        run: echo %GRAALVM_HOME% &&  native-image --version
 
       - name: compress tools
         run: 7z
