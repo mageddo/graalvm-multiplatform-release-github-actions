@@ -27,6 +27,17 @@ jobs:
         run: native-image -Djava.home="$env:GRAALVM_HOME" --version
 
       - name: compress tools
+        run: mkdir tmp
+        shell: bash
+
+      - name: Build and run HelloWorld.java
+        run: |
+          echo 'public class HelloWorld { public static void main(String[] args) { System.out.println("Hello, World!"); } }' > HelloWorld.java
+          javac HelloWorld.java
+          native-image HelloWorld ./tmp/helloworld
+          ./helloworld
+
+      - name: compress tools
         run: 7z
         shell: bash
 
