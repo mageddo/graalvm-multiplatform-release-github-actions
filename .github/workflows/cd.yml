@@ -26,7 +26,8 @@ jobs:
         run: java -version && uname -mo
         shell: bash
       - name: aa
-        run: ls $GRAALVM_HOME\bin
+        run: ls -lha $GRAALVM_HOME\bin
+        shell: bash
       - name: b
 #        run: $GRAALVM_HOME/bin/native-image --version
         run: ls -lha $GRAALVM_HOME/bin/
