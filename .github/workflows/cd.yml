@@ -27,7 +27,7 @@ jobs:
         shell: bash
 
       - name: native-image
-        run: $GRAALVM_HOME/native-image
+        run: $GRAALVM_HOME/bin/native-image
         shell: bash
 
 #  uname -mo
