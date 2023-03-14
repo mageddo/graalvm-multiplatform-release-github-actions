@@ -22,12 +22,12 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - if: runner.os == 'Windows'
-        run: ln -s $GRAALVM_HOME/bin/native-image.cmd $GRAALVM_HOME/bin/native-image
-        shell: bash
 
-      - name: native-image
-        run: $GRAALVM_HOME/bin/native-image
+      - if: runner.os == 'Windows'
+        run: native-image --version
+
+      - name: bash test
+        run: mkdir -p xpto && ls -lha
         shell: bash
 
 #  uname -mo
