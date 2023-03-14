@@ -22,10 +22,8 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-#      - name: aa
-#        run: ls -lha && native-image --version
       - name: a
-        run: java -version
+        run: java -version && uname -mo
         shell: bash
       - name: b
         run: $GRAALVM_HOME/bin/native-image --version
