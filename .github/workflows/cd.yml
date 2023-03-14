@@ -26,6 +26,10 @@ jobs:
       - if: runner.os == 'Windows'
         run: native-image --version
 
+      - name: compress tools
+        run: zip; unzip; tar
+        shell: bash
+
       - name: bash test
         run: mkdir -p xpto/x && ls -lha ./xpto/x
         shell: bash
