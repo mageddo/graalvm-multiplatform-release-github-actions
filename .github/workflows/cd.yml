@@ -22,11 +22,11 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: aa
-        run: ls -lha && native-image --version
+#      - name: aa
+#        run: ls -lha && native-image --version
       - name: a
         run: java -version
         shell: bash
       - name: b
-        run: native-image --version
+        run: env && native-image --version
         shell: bash
