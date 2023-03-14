@@ -27,7 +27,7 @@ jobs:
         run: native-image --version
 
       - name: compress tools
-        run: tar
+        run: 7z
         shell: bash
 
       - name: bash test
