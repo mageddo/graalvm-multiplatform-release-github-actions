@@ -27,7 +27,7 @@ jobs:
         run: native-image --version
 
       - name: bash test
-        run: mkdir -p xpto && ls -lha
+        run: mkdir -p xpto/x && ls -lha ./xpto/x
         shell: bash
 
 #  uname -mo
