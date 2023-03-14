@@ -28,5 +28,5 @@ jobs:
         run: java -version
         shell: bash
       - name: b
-        run: env && native-image --version
+        run: $GRAALVM_HOME/bin/native-image --version
         shell: bash
